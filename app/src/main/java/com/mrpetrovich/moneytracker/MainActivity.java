@@ -35,26 +35,29 @@ public class MainActivity extends Activity {
         final EditText price = findViewById(R.id.price);
         final Button add = findViewById(R.id.add);
         final ListView items = findViewById(R.id.items);
-        items.setAdapter(new ItemsAdapter());
+        final ItemsAdapter adapter = new ItemsAdapter();
+        items.setAdapter(adapter);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Item(name.getText().toString(), Integer.valueOf(price.getText().toString()));
+                adapter.add(new Item(name.getText().toString(), Integer.valueOf(price.getText().toString())));
+
             }
         });
     }
 
     private class ItemsAdapter extends ArrayAdapter<Item> {
-        public ItemsAdapter(@NonNull Context context, int resource) {
-            super(context, R.layout.item);
+        public ItemsAdapter() {
+            super(MainActivity.this, R.layout.item);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            final View view = getLayoutInflater().inflate(R.layout.item, parent);
-            ((TextView) view.findViewById(R.id.name)).setText(getItem().name);
-            ((TextView) view.findViewById(R.id.price)).setText(getItem().price);
+            final View view = getLayoutInflater().inflate(R.layout.item, null);
+            final Item item = getItem(position);
+            ((TextView) view.findViewById(R.id.name)).setText(item.name);
+            ((TextView) view.findViewById(R.id.price)).setText(String.valueOf(item.price));
             return view;
         }
     }
